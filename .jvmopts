@@ -1,0 +1,2 @@
+-Xmx2G
+-Djava.library.path=/Users/vibhanavale/.javacpp/cache/jfasttext-0.5.jar/com/github/jfasttext/macosx-arm64

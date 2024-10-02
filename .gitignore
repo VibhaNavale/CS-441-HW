@@ -1,0 +1,13 @@
+target/
+project/target/
+project/project/
+.bsp/
+.idea/
+.DS_Store
+logs/
+input_data/
+output_data/
+hadoop-3.3.6/
+src/main/resources/cc.en.50.bin
+META-INF/
+.jvmopts
