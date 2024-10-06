@@ -1,11 +1,13 @@
 package app
 
-import MapReduce.{TokenizedDriver, Word2VecDriver, CosineSimilarityDriver}
+import MapReduce.{CosineSimilarityDriver, TokenizedDriver, Word2VecDriver}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileStatus, FileSystem, Path}
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
+
 import java.io.FileNotFoundException
+import java.net.URI
 
 object MainApp {
   private val config = ConfigFactory.load() // Load configuration
@@ -27,7 +29,7 @@ object MainApp {
 
     // Check if the tokenization output directory exists and has any part files
     val conf = new Configuration()
-    val fs = FileSystem.get(conf)
+    val fs = FileSystem.get(new URI("s3a://cs441-assignment1/"), conf)
     val tokenizedDir = new Path(tokenizerOutput)
 
     try {
@@ -56,7 +58,7 @@ object MainApp {
     logger.info("All processes completed successfully.")
   }
 
-  private def runTokenizer(input: String, output: String): Unit = {
+  def runTokenizer(input: String, output: String): Unit = {
     try {
       logger.info(s"Running tokenizer with input: $input and output: $output")
       TokenizedDriver.main(Array(input, output))
@@ -67,7 +69,7 @@ object MainApp {
     }
   }
 
-  private def runWord2Vec(input: String, output: String): Unit = {
+  def runWord2Vec(input: String, output: String): Unit = {
     try {
       Word2VecDriver.main(Array(input, output))
       logger.info("********* Word2Vec process completed *********")
@@ -77,7 +79,7 @@ object MainApp {
     }
   }
 
-  private def runCosineSimilarity(input: String, output: String): Unit = {
+  def runCosineSimilarity(input: String, output: String): Unit = {
     try {
       CosineSimilarityDriver.main(Array(input, output))
       logger.info("********* Cosine similarity process completed *********")

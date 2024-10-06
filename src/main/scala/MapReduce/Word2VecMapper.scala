@@ -1,12 +1,15 @@
 package MapReduce
 
 import scala.jdk.CollectionConverters._
-import scala.util.{Try, Success}
+import scala.util.{Success, Try}
 import org.apache.hadoop.io.{LongWritable, Text}
 import org.apache.hadoop.mapreduce.Mapper
 import com.github.jfasttext.JFastText
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.slf4j.LoggerFactory
-import com.typesafe.config.ConfigFactory
+
+import java.net.URI
 
 class Word2VecMapper extends Mapper[LongWritable, Text, Text, Text] {
   private val logger = LoggerFactory.getLogger(getClass) // Initialize the logger
@@ -15,8 +18,25 @@ class Word2VecMapper extends Mapper[LongWritable, Text, Text, Text] {
   override def setup(context: Mapper[LongWritable, Text, Text, Text]#Context): Unit = {
     model = new JFastText()
 
-    // Load FastText model from configuration
-    model.loadModel("src/main/resources/cc.en.50.bin")
+    val configuration = new Configuration()
+
+    // Get FileSystem instance
+    val fs = FileSystem.get(new URI("s3a://cs441-assignment1/"), configuration)
+
+    // Retrieve model path from the configuration (default to S3)
+    val modelPath = context.getConfiguration.get("model.path", "s3a://cs441-assignment1/input/cc.en.50.bin")
+    val modelFilePath = new Path(modelPath)
+
+    // Check if the model file exists
+    if (fs.exists(modelFilePath)) {
+      logger.info(s"Model file exists at path: $modelPath")
+
+      // Load the model directly from S3
+      model.loadModel(modelPath)
+    } else {
+      logger.error(s"Model file does not exist at path: $modelPath")
+      throw new IllegalArgumentException(s"Model file does not exist at path: $modelPath")
+    }
   }
 
   override def map(key: LongWritable, value: Text, context: Mapper[LongWritable, Text, Text, Text]#Context): Unit = {

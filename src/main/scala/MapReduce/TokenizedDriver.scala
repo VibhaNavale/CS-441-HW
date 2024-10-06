@@ -1,6 +1,7 @@
 package MapReduce
 
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapreduce.Job
@@ -10,6 +11,8 @@ import org.slf4j.LoggerFactory
 import com.typesafe.config.ConfigFactory
 import org.apache.hadoop.mapred.JobConf
 
+import java.net.URI
+
 object TokenizedDriver {
   private val logger = LoggerFactory.getLogger(getClass) // Initialize logger
   private val config = ConfigFactory.load() // Load configuration
@@ -17,6 +20,8 @@ object TokenizedDriver {
   def main(args: Array[String]): Unit = {
     // Set up the configuration and job
     val configuration = new Configuration()
+    // configuration.set("fs.defaultFS", "s3a://cs441-assignment1/")
+
     val job = Job.getInstance(configuration, "Tokenization Job")
     job.setJarByClass(this.getClass)
     job.setMapperClass(classOf[TokenizedMapper])
@@ -27,8 +32,9 @@ object TokenizedDriver {
     job.setOutputValueClass(classOf[Text])
 
     // Check if input path exists
-    val inputPath = new Path(args(0))
-    val fs = inputPath.getFileSystem(configuration)
+    val inputPath = new Path(config.getString("app.inputPath"))
+    val fs = FileSystem.get(new URI("s3a://cs441-assignment1/"), configuration)
+
     if (!fs.exists(inputPath)) {
       logger.error(s"Input path does not exist: ${inputPath}")
       System.exit(1)
@@ -44,7 +50,7 @@ object TokenizedDriver {
 
     // Set input and output paths
     FileInputFormat.addInputPath(job, inputPath)
-    val outputPath = new Path(args(1))
+    val outputPath = new Path(config.getString("app.tokenizerOutput"))
 
     // Check if output path exists and delete if necessary
     if (fs.exists(outputPath)) {

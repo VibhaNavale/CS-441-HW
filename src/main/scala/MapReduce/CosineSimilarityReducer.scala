@@ -66,7 +66,6 @@ class CosineSimilarityReducer extends Reducer[Text, Text, Text, Text] {
     else "Dissimilar"
   }
 
-
   override def cleanup(context: Reducer[Text, Text, Text, Text]#Context): Unit = {
     logger.info("Reducer complete.")
   }

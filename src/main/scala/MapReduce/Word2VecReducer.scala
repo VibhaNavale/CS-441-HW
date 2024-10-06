@@ -7,7 +7,6 @@ import org.apache.hadoop.mapreduce.Reducer
 import org.slf4j.{Logger, LoggerFactory}
 
 class Word2VecReducer extends Reducer[Text, Text, Text, Text] {
-  // Initialize logger
   val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
   override def reduce(key: Text, values: java.lang.Iterable[Text], context: Reducer[Text, Text, Text, Text]#Context): Unit = {

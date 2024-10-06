@@ -14,7 +14,7 @@ Repo for the MapReduce Homework-1 for CS441 Fall2024
 - SBT (1.10.2) and SBT Assembly (2.2.0)
 - Hadoop Version 3.3.6
 - Java 11
-
+- Download the IMDB dataset of 50K movie reviews from Kaggle (https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews) 
 ---
 
 ## Running the project
@@ -59,7 +59,7 @@ Other Requirements:
 We will take a look at the detailed description of how each of these pieces of code work below. Line by line comments explaining every step are also added to the source code in this git repo:
 
 1) ### [MainApp](src/main/scala/app/MainApp.scala) [App]
-   This is the main method that we call to run our jobs. It takes our input and output path. Our input is the .csv dataset of IMDB reviews (downloaded from Kaggle), and output path of the first job would be tokenized output files.
+    This is the main method that we call to run our jobs. It takes our input and output path. Our input is the .csv dataset of IMDB reviews (downloaded from Kaggle), and output path of the first job would be tokenized output files.
 - The main method runs all jobs sequentially: Tokenizer, Word2Vec, and Cosine Similarity.
 - Takes input path from the config file (inputPath) and specifies output paths for each stage (tokenized output, Word2Vec, Cosine Similarity).
 - Job Flow:
@@ -69,7 +69,7 @@ We will take a look at the detailed description of how each of these pieces of c
 - Logs each stage and handles errors if any output is missing or jobs fail.
 
 2) ### [TokenizedDriver](src/main/scala/MapReduce/TokenizedDriver.scala) [MapReduce]
-   Handles the setup and execution of the tokenization job, specifying the mapper and reducer classes, input/output paths, and logging the results.
+    Handles the setup and execution of the tokenization job, specifying the mapper and reducer classes, input/output paths, and logging the results.
 - Sets up a Hadoop job for tokenization.
 - Loads config, sets mapper/reducer classes, and handles input/output paths.
 - Executes the job, logs results, and handles errors (missing paths or job failure).
@@ -80,8 +80,8 @@ We will take a look at the detailed description of how each of these pieces of c
 - Uses encode() to tokenize the input text.
 - Outputs word tokens with their corresponding token IDs and counts.
 4) ### [TokenizedReducer](src/main/scala/MapReduce/TokenizedReducer.scala) [MapReduce]
-   Aggregates token IDs from mapper outputs, calculates frequencies, and emits the final token list with total counts.
--  Processes token counts from the mapper output.
+    Aggregates token IDs from mapper outputs, calculates frequencies, and emits the final token list with total counts.
+- Processes token counts from the mapper output.
 - Aggregates unique token IDs and sums their frequencies.
 - Outputs the final result in the format `word [token IDs] total-frequency.`
 - Example Output:
@@ -94,20 +94,20 @@ We will take a look at the detailed description of how each of these pieces of c
   deported	[18, 220, 279, 505, 3277, 5030, 5429, 24785, 68210] 9`
 
 5) ### [Word2VecDriver](src/main/scala/MapReduce/Word2VecDriver.scala) [MapReduce]
-   Manages the Hadoop job for Word2Vec processing, sets up the mapper and reducer, handles input/output paths, and ensures the job runs successfully.
+    Manages the Hadoop job for Word2Vec processing, sets up the mapper and reducer, handles input/output paths, and ensures the job runs successfully.
 - Loads configuration paths for input (tokenizer output) and output (Word2Vec result).
 - Initializes Hadoop job and sets up the mapper and reducer.
 - Deletes existing output directory if it exists.
 - Executes the job and logs success or failure.
 
 6) ### [Word2VecMapper](src/main/scala/MapReduce/Word2VecMapper.scala) [MapReduce]
-   Processes each token from the tokenized output and retrieves its vector representation using FastText, truncating to 5 dimensions.
+    Processes each token from the tokenized output and retrieves its vector representation using FastText, truncating to 5 dimensions.
 - Initializes and loads the FastText model.
 - Cleans tokens and retrieves vectors for valid tokens.
 - Uses zero vectors for tokens without a FastText vector.
 - Outputs token and vector pairs (without brackets around the token ID).
 7) ### [Word2VecReducer](src/main/scala/MapReduce/Word2VecReducer.scala) [MapReduce]
-Aggregates vectors from the mapper and computes the mean vector for each token, handling vector parsing errors gracefully.
+    Aggregates vectors from the mapper and computes the mean vector for each token, handling vector parsing errors gracefully.
 - Collects and parses vectors for each token.
 - Calculates the mean vector across all vectors for each token.
 - Uses zero vectors as fallback for errors or missing vectors.
@@ -120,19 +120,19 @@ Aggregates vectors from the mapper and computes the mean vector for each token, 
     trickedout 315	-0.043632615357637405,0.08213238418102264,-0.02888466604053974,-0.03074292093515396,0.03337191790342331`
 
 8) ### [CosineSimilarityDriver](src/main/scala/MapReduce/CosineSimilarityDriver.scala) [MapReduce]
-   Coordinates the execution of the MapReduce job to compute cosine similarity between word embeddings, including setting up paths, configurations, and launching the job.
+    Coordinates the execution of the MapReduce job to compute cosine similarity between word embeddings, including setting up paths, configurations, and launching the job.
 - Initializes the job configuration.
 - Sets input/output paths and checks for existing output.
 - Defines mapper and reducer classes.
 - Executes the job and checks for success.
 
 9) ### [CosineSimilarityMapper](src/main/scala/MapReduce/CosineSimilarityMapper.scala) [MapReduce]
-   Processes input to extract tokens and their embeddings, emitting them as key-value pairs to be processed by the reducer.
+    Processes input to extract tokens and their embeddings, emitting them as key-value pairs to be processed by the reducer.
 - Extracts tokens and embeddings from input.
 - Emits token and embedding as key-value pairs.
 
 10) ### [CosineSimilarityReducer](src/main/scala/MapReduce/CosineSimilarityReducer.scala) [MapReduce]
-Gathers word embeddings, computes cosine similarity between each pair, and classifies their similarity levels.
+    Gathers word embeddings, computes cosine similarity between each pair, and classifies their similarity levels.
 - Collects embeddings for tokens.
 - Computes cosine similarity between token pairs.
 - Classifies token pairs as "Very Similar," "Similar," or "Dissimilar."

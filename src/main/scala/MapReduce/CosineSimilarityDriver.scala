@@ -10,6 +10,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 import org.slf4j.{Logger, LoggerFactory}
 
+import java.net.URI
+
 object CosineSimilarityDriver {
   val logger: Logger = LoggerFactory.getLogger(this.getClass)
 
@@ -24,6 +26,8 @@ object CosineSimilarityDriver {
     val outputPathStr = config.getString("app.cosineOutput")
 
     val configuration = new Configuration()
+    configuration.set("fs.defaultFS", "s3a://cs441-assignment1/")
+
     val job = Job.getInstance(configuration, "Cosine Similarity Job")
     job.setJarByClass(this.getClass)
 
@@ -44,7 +48,7 @@ object CosineSimilarityDriver {
     val outputPath = new Path(outputPathStr)
 
     // Get the FileSystem instance
-    val fs = FileSystem.get(conf)
+    val fs = FileSystem.get(new URI("s3a://cs441-assignment1/"), configuration)
 
     // Check if output path exists and delete if necessary
     if (fs.exists(outputPath)) {
