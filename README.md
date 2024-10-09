@@ -5,9 +5,6 @@
 
 Repo for the MapReduce Homework-1 for CS441 Fall2024
 
-Project walkthrough: https://uic.zoom.us/rec/share/K99tBYVZW2X9Ch-j5pzJw-20CgDoWkRKsW0kGWaxlMHlVoZTa4IH6KCapxZeZKXU.jAl5gOgqDodafHcP
-
-
 ## Environment:
 **OS** : macOS (M3 Chip)
 
@@ -17,6 +14,7 @@ Project walkthrough: https://uic.zoom.us/rec/share/K99tBYVZW2X9Ch-j5pzJw-20CgDoW
 - SBT (1.10.2) and SBT Assembly (2.2.0)
 - Hadoop Version 3.3.6
 - Java 11
+- Scala 2.13.15
 - Download the IMDB dataset of 50K movie reviews from Kaggle (https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
 - Download the English Model File (.bin): Locate the section for the English language in FastText Crawl Vectors website (https://fasttext.cc/docs/en/crawl-vectors.html) and download the appropriate model file (typically named something like cc.en.300.vec or cc.en.300.bin). 
   - This file contains pre-trained word vectors that can enhance the performance of the FastText model. This can be stored in the _src/main/resources_ folder, or uploaded on S3.
