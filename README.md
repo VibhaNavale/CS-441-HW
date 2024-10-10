@@ -5,6 +5,9 @@
 
 Repo for the MapReduce Homework-1 for CS441 Fall2024
 
+Project walkthrough:
+https://uic.zoom.us/rec/share/A_Ju21cAOss27KLXYy-IIhE1G6nZ2X-e2LpetvAgevxUFftBa5ZkzhLDZgBKwlMw.cl0F9ftwpF9gAUi0
+
 ## Environment:
 **OS** : macOS (M3 Chip)
 
